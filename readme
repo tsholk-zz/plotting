@@ -1,1 +1,4 @@
-A simple demonstartion of a node.js app built using express, jade, and twitter bootstrap. The following free plotting programs have been incorporates: Flot, Flotr2, Google ChartTools, and Dygraphs.
+A simple demonstartion of a node.js app built using express, jade, and twitter bootstrap. The following free plotting programs have been incorporates: Flot, Flotr2, Google Chart Tools, and Dygraphs.
+
+After download install dependencies: npm install
+Then start app: node app.js
