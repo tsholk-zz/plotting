@@ -1,0 +1,31 @@
+.container
+  h1= title
+  br
+  .row
+    #chart_dy.chart_div
+
+script(src='/packages/dygraphs/dygraph-combined.js')
+script
+  g = new Dygraph(
+          document.getElementById("chart_dy"),
+          [
+            [ new Date("2011/11/01"), 100 ],
+            [ new Date("2011/11/02"), 200 ],
+            [ new Date("2011/11/03"), 300 ],
+            [ new Date("2011/11/04"), 100 ],
+            [ new Date("2011/11/05"), 200 ],
+            [ new Date("2011/11/06"), 300 ],
+            [ new Date("2011/11/07"), 200 ],
+            [ new Date("2011/11/08"), 100 ]
+          ],
+          {
+            labels: [ 'Date', 'Value' ]
+          }
+      );
+
+  g.setAnnotations([{
+    series: 'Value',
+    x: Date.parse('2011/11/04'),
+    shortText: 'M',
+    text: 'Marker'
+  }]);
