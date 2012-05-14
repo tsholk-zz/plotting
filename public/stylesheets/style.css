@@ -8,6 +8,11 @@ a {
 }
 
 .chart_div{
-  width: 900px;
+  width: 800px;
   height:400px;
+}
+
+.lineUp {
+  display: inline-block;
+  margin: 5px;
 }
