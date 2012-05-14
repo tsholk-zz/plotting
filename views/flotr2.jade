@@ -17,113 +17,101 @@ body
         button.lineUp(name='download', onclick='CurrentExample(\'download\')') Download
         button.lineUp(name='reset', onclick='CurrentExample(\'reset\')') Reset
     .row
-      #chart1.chart_div
+      #example.chart_div
   script
     (function () {
-      var
-        d1 = [],
-        d2 = [],
-        d3 = [],
-        d4 = [],
-        d5 = [],
-        graph,
-        i,
-        container = document.getElementById('chart1'),
-        options = {
-          title: 'Download Image Example',
-          subtitle: 'You can save me as an image',
-          xaxis:{
-            noTicks: 7, // Display 7 ticks.
-            tickFormatter: function(n){ return '('+n+')'; }, // => displays tick values between brackets.
-            min: 1,  // => part of the series is not displayed.
-            max: 7.5, // => part of the series is not displayed.
-            labelsAngle: 45,
-            title: 'x Axis'
-          },
-          yaxis:{
-            ticks: [[0, "Lower"], 10, 20, 30, [40, "Upper"]],
-            max: 40,
-            title: 'y = f(x)'
-          },
-          y2axis:{color:'#FF0000', max: 500, title: 'y = x^3'},
-          grid:{
-            verticalLines: false,
-            backgroundColor: 'white'
-          },
-          HtmlText: false,
-          legend: {
-            position: 'nw'
+      function mouse_zoom(container) {
+    
+          var
+            d1 = [],
+            d2 = [],
+            d3 = [],
+            options,
+            graph,
+            i;
+    
+          for (i = 0; i < 40; i += 0.5) {
+            d1.push([i, Math.sin(i)+3*Math.cos(i)]);
+            d2.push([i, Math.pow(1.1, i)]);
+            d3.push([i, 40 - i+Math.random()*10]);
           }
-        };
+          
+          options = {
+            selection : { mode : 'x', fps : 30 },
+            title: 'Download Image Example',
+            subtitle: 'You can save me as an image',
+            xaxis:{
+              noTicks: 7, // Display 7 ticks.
+              tickFormatter: function(n){ return '('+n+')'; }, // => displays tick values between brackets.
+              labelsAngle: 45,
+              title: 'x Axis'
+            },
+            yaxis:{
+              ticks: [[0, "Lower"], 10, 20, 30, [40, "Upper"]],
+              title: 'y = f(x)'
+            },
+            y2axis:{color:'#FF0000', max: 500, title: 'y = x^3'},
+            grid:{
+              backgroundColor: 'white'
+            },
+            HtmlText: false,
+            legend: {
+              position: 'nw'
+            }
+          };
+        
+          // Draw graph with default options, overwriting with passed options
+          function drawGraph (opts) {
+    
+            // Clone the options, so the 'options' variable always keeps intact.
+            var o = Flotr._.extend(Flotr._.clone(options), opts || {});
+    
+            // Return a new graph.
+            return Flotr.draw(
+              container,
+              [ d1, d2, d3 ],
+              o
+            );
+          }
+    
+          // Actually draw the graph.
+          graph = drawGraph();      
+        
+          // Hook into the 'flotr:select' event.
+          Flotr.EventAdapter.observe(container, 'flotr:select', function (area) {
+    
+            // Draw graph with new area
+            f = drawGraph({
+              xaxis: {min:area.x1, max:area.x2},
+              yaxis: {min:area.y1, max:area.y2}
+            });
+    
+          });
 
-      for (i = 0; i <= 10; i += 0.1) {
-        d1.push([i, 4 + Math.pow(i,1.5)]);
-        d2.push([i, Math.pow(i,3)]);
-        d3.push([i, i*5+3*Math.sin(i*4)]);
-        d4.push([i, i]);
-        if( i.toFixed(1)%1 == 0 ){
-          d5.push([i, 2*i]);
-        }
+          // When graph is clicked, draw the graph with default area.          
+          Flotr.EventAdapter.observe(container, 'flotr:click', function () {
+              drawGraph();
+          });
+          //download
+          this.CurrentExample = function (operation) {
+
+            var
+              format = $('#image-download input:radio[name=format]:checked').val();
+            if (Flotr.isIE && Flotr.isIE < 9) {
+              alert(
+                "Your browser doesn't allow you to get a bitmap image from the plot, " +
+                "you can only get a VML image that you can use in Microsoft Office.<br />"
+              );
+            }
+
+            if (operation == 'to-image') {
+              graph.download.saveImage(format, null, null, true)
+            } else if (operation == 'download') {
+              graph.download.saveImage(format);
+            } else if (operation == 'reset') {
+              graph.download.restoreCanvas();
+            }
+          };
       }
-
-      // Draw the graph w zoom 
-      function drawGraph (opts) {
-
-        // Clone the options, so the 'options' variable always keeps intact.
-        var o = Flotr._.extend(Flotr._.clone(options), opts || {});
-
-        // Return a new graph.
-        return Flotr.draw(
-          container,[ 
-            {data:d1, label:'y = 4 + x^(1.5)', lines:{fill:true}}, 
-            {data:d2, label:'y = x^3', yaxis:2}, 
-            {data:d3, label:'y = 5x + 3sin(4x)'}, 
-            {data:d4, label:'y = x'},
-            {data:d5, label:'y = 2x', lines: {show: true}, points: {show: true}}
-          ], 
-          o
-        );
-      }
-      
-      // Actually draw the graph.
-      graph = drawGraph();      
-      
-      // Hook into the 'flotr:select' event.
-      Flotr.EventAdapter.observe(container, 'flotr:select', function (area) {
-
-        // Draw graph with new area
-        f = drawGraph({
-          xaxis: {min:area.x1, max:area.x2},
-          yaxis: {min:area.y1, max:area.y2}
-        });
-
-      });
-
-      // When graph is clicked, draw the graph with default area.
-      Flotr.EventAdapter.observe(container, 'flotr:click', function () { drawGraph(); });
-      
-      //download
-      this.CurrentExample = function (operation) {
-    
-        var
-          format = $('#image-download input:radio[name=format]:checked').val();
-        if (Flotr.isIE && Flotr.isIE < 9) {
-          alert(
-            "Your browser doesn't allow you to get a bitmap image from the plot, " +
-            "you can only get a VML image that you can use in Microsoft Office.<br />"
-          );
-        }
-    
-        if (operation == 'to-image') {
-          graph.download.saveImage(format, null, null, true)
-        } else if (operation == 'download') {
-          graph.download.saveImage(format);
-        } else if (operation == 'reset') {
-          graph.download.restoreCanvas();
-        }
-      };
-    
-      return graph;
-    }
-
-    )();
+      mouse_zoom(document.getElementById("example"));
+    })();
