@@ -1,0 +1,232 @@
+head
+  script(src='http://d3js.org/d3.v2.js', type='text/javascript')
+  script(src='/packages/rickshaw/rickshaw.js', type='text/javascript')
+  //link(href='/packages/rickshaw/rickshaw.min.css', rel='stylesheet')
+  
+  link(type='text/css', rel='stylesheet', href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css')
+  link(type='text/css', rel='stylesheet', href='/packages/rickshaw/css/graph.css')
+  link(type='text/css', rel='stylesheet', href='/packages/rickshaw/css/detail.css')
+  link(type='text/css', rel='stylesheet', href='/packages/rickshaw/css/legend.css')
+  link(type='text/css', rel='stylesheet', href='/packages/rickshaw/extensions.css')
+  
+  script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js', type='text/javascript')
+  script(src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js', type='text/javascript')  
+  //can't tell if i need these
+  script(src='/packages/rickshaw/js/Rickshaw.Class.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Compat.ClassList.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Graph.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Graph.Renderer.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Graph.Renderer.Area.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Graph.Renderer.Line.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Graph.Renderer.Bar.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Graph.Renderer.ScatterPlot.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Graph.RangeSlider.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Graph.HoverDetail.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Graph.Annotate.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Graph.Legend.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Graph.Axis.Time.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Graph.Behavior.Series.Toggle.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Graph.Behavior.Series.Order.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Graph.Behavior.Series.Highlight.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Graph.Smoother.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Graph.Unstacker.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Fixtures.Time.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Fixtures.Number.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Fixtures.RandomData.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Fixtures.Color.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Color.Palette.js')
+  script(src='/packages/rickshaw/js/Rickshaw.Graph.Axis.Y.js')
+  //
+  script(src='/packages/rickshaw/extensions.js', type='text/javascript')
+
+body
+  .container
+    h1= title
+    br
+    .row
+      #content
+        form#side_panel
+          h1 Random Data in the Future
+          section
+            #legend
+          section
+            #renderer_form.toggler
+              input#area(type='radio', name='renderer', value='area', checked='checked')
+              label(for='area') area
+              input#bar(type='radio', name='renderer', value='bar')
+              label(for='bar') bar
+              input#line(type='radio', name='renderer', value='line')
+              label(for='line') line
+              input#scatter(type='radio', name='renderer', value='scatterplot')
+              label(for='scatter') scatter
+          section
+            #offset_form
+              label(for='stack')
+                input#stack(type='radio', name='offset', value='zero', checked='checked')
+                span stack
+              label(for='stream')
+                input#stream(type='radio', name='offset', value='wiggle')
+                span stream
+              label(for='pct')
+                input#pct(type='radio', name='offset', value='expand')
+                span pct
+              label(for='value')
+                input#value(type='radio', name='offset', value='value')
+                span value
+            #interpolation_form
+              label(for='cardinal')
+                input#cardinal(type='radio', name='interpolation', value='cardinal', checked='checked')
+                span cardinal
+              label(for='linear')
+                input#linear(type='radio', name='interpolation', value='linear')
+                span linear
+              label(for='step')
+                input#step(type='radio', name='interpolation', value='step-after')
+                span step
+          section
+            h6 Smoothing
+            #smoother
+          section
+        #chart_container
+          #chart
+          #timeline
+          #slider
+          button(type='button') Download SVG
+          
+script
+  var seriesData = [ [], [], [], [], [], [], [], [], [] ];
+  var random = new Rickshaw.Fixtures.RandomData(150);
+
+  for (var i = 0; i < 150; i++) {
+    random.addData(seriesData);
+  }
+
+  var palette = new Rickshaw.Color.Palette( { scheme: 'classic9' } );
+
+  var graph = new Rickshaw.Graph( {
+    element: document.getElementById("chart"),
+    width: 900,
+    height: 500,
+    renderer: 'area',
+    stroke: true,
+    series: [
+      {
+        color: palette.color(),
+        data: seriesData[0],
+        name: 'Moscow'
+      }, {
+        color: palette.color(),
+        data: seriesData[1],
+        name: 'Shanghai'
+      }, {
+        color: palette.color(),
+        data: seriesData[2],
+        name: 'Amsterdam'
+      }, {
+        color: palette.color(),
+        data: seriesData[3],
+        name: 'Paris'
+      }, {
+        color: palette.color(),
+        data: seriesData[4],
+        name: 'Tokyo'
+      }, {
+        color: palette.color(),
+        data: seriesData[5],
+        name: 'London'
+      }, {
+        color: palette.color(),
+        data: seriesData[6],
+        name: 'New York'
+      }
+    ]
+  } );
+
+  graph.render();
+
+  var slider = new Rickshaw.Graph.RangeSlider( {
+    graph: graph,
+    element: $('#slider')
+  } );
+
+  var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+    graph: graph
+  } );
+
+  var annotator = new Rickshaw.Graph.Annotate( {
+    graph: graph,
+    element: document.getElementById('timeline')
+  } );
+
+  var legend = new Rickshaw.Graph.Legend( {
+    graph: graph,
+    element: document.getElementById('legend')
+
+  } );
+
+  var shelving = new Rickshaw.Graph.Behavior.Series.Toggle( {
+    graph: graph,
+    legend: legend
+  } );
+
+  var order = new Rickshaw.Graph.Behavior.Series.Order( {
+    graph: graph,
+    legend: legend
+  } );
+
+  var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight( {
+    graph: graph,
+    legend: legend
+  } );
+
+  var smoother = new Rickshaw.Graph.Smoother( {
+    graph: graph,
+    element: $('#smoother')
+  } );
+
+  var ticksTreatment = 'glow';
+
+  var xAxis = new Rickshaw.Graph.Axis.Time( {
+    graph: graph,
+    ticksTreatment: ticksTreatment
+  } );
+
+  xAxis.render();
+
+  var yAxis = new Rickshaw.Graph.Axis.Y( {
+    graph: graph,
+    tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+    ticksTreatment: ticksTreatment
+  } );
+
+  yAxis.render();
+
+  var controls = new RenderControls( {
+    element: document.querySelector('form'),
+    graph: graph
+  } );
+
+  var messages = [
+    "Changed home page welcome message",
+    "Minified JS and CSS",
+    "Changed button color from blue to green",
+    "Refactored SQL query to use indexed columns",
+    "Added additional logging for debugging",
+    "Fixed typo",
+    "Rewrite conditional logic for clarity",
+    "Added documentation for new methods"
+  ];
+
+  setInterval( function() {
+    random.addData(seriesData);
+    graph.update();
+  }, 3000 );
+
+  function addAnnotation(force) {
+    if (messages.length > 0 && (force || Math.random() >= 0.95)) {
+      annotator.add(seriesData[2][seriesData[2].length-1].x, messages.shift());
+    }
+  }
+
+  addAnnotation(true);
+  setTimeout( function() { setInterval( addAnnotation, 6000 ) }, 6000 );
