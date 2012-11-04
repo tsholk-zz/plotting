@@ -26,3 +26,15 @@ exports.google = function(req, res){
 exports.dygraphs = function(req, res){
   res.render('dygraphs', { title: 'Dygraphs' })
 };
+
+exports.rickshaw = function(req, res){
+  res.render('rickshaw', { title: 'Rickshaw D3' })
+};
+
+exports.nvd3 = function(req, res){
+  res.render('nvd3', { title: 'NVD3' })
+};
+
+exports.mockup = function(req, res){
+  res.render('mockup', { title: 'Mockup' })
+};

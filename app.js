@@ -34,6 +34,9 @@ app.get('/flot', routes.flot);
 app.get('/flotr2', routes.flotr2);
 app.get('/google', routes.google);
 app.get('/dygraphs', routes.dygraphs);
+app.get('/rickshaw', routes.rickshaw);
+app.get('/nvd3', routes.nvd3);
+app.get('/mockup', routes.mockup);
 
 app.listen(3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

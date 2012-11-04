@@ -12,6 +12,15 @@ a {
   height:400px;
 }
 
+.chart_div_large{
+  width: 600px;
+  height:400px;
+}
+.chart_div_small{
+  width: 300px;
+  height:200px;
+}
+
 .lineUp {
   display: inline-block;
   margin: 5px;
